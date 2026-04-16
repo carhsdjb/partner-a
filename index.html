@@ -3,19 +3,25 @@
 <head>
     <title>Weltzeituhr</title>
     <style>
-        .clock-container { display: flex; justify-content: space-between; padding: 0 150px; }
-        .clock { width: 300px; height: 300px; border: 2px solid black; border-radius: 50%; position: relative; }
-        .hand { position: absolute; bottom: 50%; left: 50%; transform-origin: bottom; background: black; }
-        .hour { width: 6px; height: 80px; margin-left: -3px; }
-        .minute { width: 4px; height: 120px; margin-left: -2px; }
-        .tick { position: absolute; width: 4px; height: 15px; background: #999; left: 50%; top: 10px; transform-origin: 50% 140px; }
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; background-color: #f4f4f9; }
+        .clock-container { display: flex; gap: 50px; margin-top: 50px; }
+        .clock { width: 300px; height: 300px; border: 8px solid #333; border-radius: 50%; position: relative; background: white; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .hand { position: absolute; bottom: 50%; left: 50%; transform-origin: bottom; background: #333; border-radius: 5px; }
+        .hour { width: 8px; height: 80px; margin-left: -4px; }
+        .minute { width: 4px; height: 120px; margin-left: -2px; background: #666; }
+        .tick { position: absolute; width: 4px; height: 15px; background: #333; left: 50%; top: 10px; transform-origin: 50% 140px; border-radius: 2px; }
+        .icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 50px; z-index: 1; }
+        .dark { background-color: #222; }
+        .dark h3 { color: white; }
     </style>
 </head>
 <body>
+    <button onclick="toggleTheme()">Modus wechseln</button>
     <div class="clock-container">
         <div>
             <h3>Berlin</h3>
             <div id="berlin" class="clock">
+                <div class="icon">🥨</div>
                 <div id="berlin-h" class="hand hour"></div>
                 <div id="berlin-m" class="hand minute"></div>
             </div>
@@ -23,6 +29,7 @@
         <div>
             <h3>NYC</h3>
             <div id="nyc" class="clock">
+                <div class="icon">🗽</div>
                 <div id="nyc-h" class="hand hour"></div>
                 <div id="nyc-m" class="hand minute"></div>
             </div>
@@ -55,6 +62,10 @@
                 tick.style.transform = `rotate(${i * 30}deg)`;
                 clock.appendChild(tick);
             }
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark');
         }
 
         createTicks('berlin');
