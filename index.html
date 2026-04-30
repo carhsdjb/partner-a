@@ -13,10 +13,13 @@
         .icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 50px; z-index: 1; }
         .dark { background-color: #222; }
         .dark h3 { color: white; }
+        #gameCanvas { position: fixed; top: 0; left: 0; z-index: 0; pointer-events: none; }
+        .clock-container { position: relative; z-index: 1; }
     </style>
 </head>
 <body>
-    <button onclick="toggleTheme()">Modus wechseln</button>
+    <canvas id="gameCanvas"></canvas>
+    <button onclick="toggleTheme()" style="position: relative; z-index: 10;">Modus wechseln</button>
     <div class="clock-container">
         <div>
             <h3>Berlin</h3>
@@ -37,6 +40,48 @@
     </div>
 
     <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor(x, y) {
+                this.x = x; this.y = y;
+                this.vx = (Math.random() - 0.5) * 2;
+                this.vy = (Math.random() - 0.5) * 2;
+                this.size = Math.random() * 3 + 1;
+            }
+            update() {
+                this.x += this.vx; this.y += this.vy;
+                if (this.size > 0.1) this.size -= 0.01;
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(100, 150, 255, 0.5)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        window.addEventListener('mousemove', (e) => {
+            for(let i=0; i<3; i++) particles.push(new Particle(e.clientX, e.clientY));
+        });
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles = particles.filter(p => p.size > 0.1);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
         function updateClocks() {
             const now = new Date();
             
